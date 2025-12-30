@@ -78,7 +78,7 @@ public class IncomingActivity extends AppCompatActivity {
 
     private void setupCallEventHandler() {
 
-        AganEngine.answer(call, new AganCallEventHandler() {
+        AganEngine.receive(call, new AganCallEventHandler() {
             @Override
             public void onCallFailure(AganError error) {
                 super.onCallFailure(error);
@@ -135,9 +135,9 @@ public class IncomingActivity extends AppCompatActivity {
         });
     }
 
-    private void receiveCall() {
+    private void answerCall() {
         // 接听电话
-        AganEngine.receive(call);
+        AganEngine.answer(call);
         
         // 切换到通话界面
         incomingLayout.setVisibility(View.GONE);
@@ -172,7 +172,7 @@ public class IncomingActivity extends AppCompatActivity {
                     @Override
                     public void onGranted(List<String> permissions, boolean allGranted) {
                         if (permissions.contains(Permission.RECORD_AUDIO)) {
-                            receiveCall();
+                            answerCall();
                         }
                     }
 
