@@ -1,4 +1,6 @@
-package com.example.agandemo;
+package com.agan.aganyun;
+
+import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,18 +13,29 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.agan.agan_engine_kit.open.AganAccount;
+import com.agan.agan_engine_kit.open.AganCall;
 import com.agan.agan_engine_kit.open.AganEngine;
 import com.agan.agan_engine_kit.open.AganEngineConfig;
 import com.agan.agan_engine_kit.open.AganEngineLoginEventHandler;
 import com.agan.agan_engine_kit.open.AganEnvironment;
 import com.agan.agan_engine_kit.open.AganError;
+import com.agan.agan_engine_kit.open.IAganEngineAccountEventHandler;
 import com.agan.agan_engine_kit.open.IAganEngineAuthEventHandler;
 import com.agan.agan_engine_kit.open.IAganUploadEventHandler;
 import com.agan.agan_engine_kit.open.models.AganBaseResult;
+import com.agan.aganyun.R;
 import com.google.gson.JsonObject;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
+import com.huawei.hmf.tasks.OnFailureListener;
+import com.huawei.hmf.tasks.OnSuccessListener;
+import com.huawei.hms.location.LocationRequest;
+import com.huawei.hms.location.LocationServices;
+import com.huawei.hms.location.LocationSettingsRequest;
+import com.huawei.hms.location.LocationSettingsResponse;
+import com.huawei.hms.location.LocationSettingsStates;
+import com.huawei.hms.location.SettingsClient;
 
 import java.util.List;
 import java.util.Map;
@@ -79,6 +92,40 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         });
+
+
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        LocationRequest mLocationRequest = new LocationRequest();
+        builder.addLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
+        // 检查设备定位设置
+        settingsClient.checkLocationSettings(locationSettingsRequest)
+                // 检查设备定位设置接口调用成功监听
+                .addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+                    @Override
+                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                        LocationSettingsStates locationSettingsStates =
+                                locationSettingsResponse.getLocationSettingsStates();
+                        StringBuilder stringBuilder = new StringBuilder();
+                        // 定位开关是否打开
+                        stringBuilder.append(",\nisLocationUsable=")
+                                .append(locationSettingsStates.isLocationUsable());
+                        // HMS Core是否可用
+                        stringBuilder.append(",\nisHMSLocationUsable=")
+                                .append(locationSettingsStates.isHMSLocationUsable());
+                        Log.i(TAG, "checkLocationSetting onComplete:" + stringBuilder.toString());
+                    }
+                })
+                // 检查设备定位设置接口失败监听回调
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.i(TAG, "checkLocationSetting onFailure:" + e.getMessage());
+                    }
+                });
     }
 
     void initSDK() {
@@ -107,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 usernameTV.setText("用户名："+account.getUsername());
                 userIdTV.setText("用户id："+account.getUserId());
                 userVerifyTV.setText("用户认证状态："+account.getVerifyStatus().name());
+                onWatch(account);
             }
 
             @Override
@@ -158,6 +206,18 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, error.getMsg(), Toast.LENGTH_LONG).show();
                 }
             });
+        });
+    }
+
+    private void onWatch(AganAccount account) {
+        account.setAccountEventHandler(new IAganEngineAccountEventHandler() {
+            @Override
+            public void onIncomingCall(AganCall call) {
+                // 弹起来电页面
+                Intent intent = new Intent(MainActivity.this, IncomingActivity.class);
+                intent.putExtra("callId", call.getSipCallId());
+                startActivity(intent);
+            }
         });
     }
 }

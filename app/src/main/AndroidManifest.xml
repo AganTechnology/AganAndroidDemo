@@ -37,6 +37,9 @@
             android:name=".CallingActivity"
             android:exported="false" />
         <activity
+            android:name=".IncomingActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

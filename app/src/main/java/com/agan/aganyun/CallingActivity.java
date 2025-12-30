@@ -1,4 +1,5 @@
-package com.example.agandemo;
+package com.agan.aganyun;
+
 
 import static com.agan.agan_engine_kit.open.AganCallState.linking;
 
@@ -17,6 +18,7 @@ import com.agan.agan_engine_kit.open.AganCallState;
 import com.agan.agan_engine_kit.open.AganEngine;
 import com.agan.agan_engine_kit.open.AganError;
 import com.agan.agan_engine_kit.open.IAganEngineAuthEventHandler;
+import com.agan.aganyun.R;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;

@@ -1,14 +1,15 @@
 plugins {
     id 'com.android.application'
+    id 'com.huawei.agconnect'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.example.agandemo'
+    namespace 'com.agan.aganyun'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.agandemo"
+        applicationId "com.agan.aganyun"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -26,6 +27,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    signingConfigs{
+        release{
+            keyAlias "agan"
+            keyPassword "agan123456"
+            storePassword "agan123456"
+            storeFile  file("../AganKeyStore.jks")
+            v2SigningEnabled true
+
+        }
+        debug{
+            keyAlias "agan"
+            keyPassword "agan123456"
+            storePassword "agan123456"
+            storeFile  file("../AganKeyStore.jks")
+            v2SigningEnabled true
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -49,7 +69,7 @@ android {
 dependencies {
     implementation 'com.amap.api:location:latest.integration'
     implementation 'com.amap.api:location:latest.integration'
-    implementation 'io.github.agantechnology:agan-engine-kit:2.2.0'
+    implementation 'io.github.agantechnology:agan-engine-kit:2.3.0'
     implementation 'com.github.getActivity:XXPermissions:18.3'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.10.1'
@@ -64,6 +84,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.huawei.hms:location:6.12.0.300'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
